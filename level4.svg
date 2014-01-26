@@ -25,15 +25,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3747596"
-     inkscape:cx="85.515533"
+     inkscape:cx="342.85708"
      inkscape:cy="532.95005"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="978"
-     inkscape:window-height="623"
-     inkscape:window-x="20"
-     inkscape:window-y="20"
+     inkscape:window-width="483"
+     inkscape:window-height="619"
+     inkscape:window-x="802"
+     inkscape:window-y="0"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
@@ -81,5 +81,10 @@
        id="path3147"
        d="M 314.4591,761.21669 383.03054,741.21669 417.31625,744.07383 448.74482,744.07383 471.60196,735.50241 528.74482,744.07383 580.17339,726.93098 608.74482,746.93098 668.74482,746.93098 643.03054,786.93098 577.31625,812.64526 551.60196,824.07383 508.74482,821.21669 445.88768,826.93098 428.74482,806.93098 400.17339,809.78812 371.60195,815.50241 337.31624,798.35955 z"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 234.95017,599.91945 232.04057,516.99586 237.13237,465.35047 285.86816,463.89567 308.41756,466.07787 307.69016,481.35327 250.95296,477.71627 245.86116,538.09046 247.31596,581.00705 247.31596,597.00985 z"
+       id="path3149"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

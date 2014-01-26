@@ -22,6 +22,17 @@ int p2_counter = 1000;
 
 bool verbose = true;
 
+int p2_fresh_handle()
+{
+	if (p2_handles.size()>0)
+	{
+		int result = p2_handles.front();
+		p2_handles.pop_front();
+		return result;
+	}
+	return p2_counter++;
+}
+
 extern "C" void verbose_logging()
 {
 	verbose = true;
@@ -35,10 +46,12 @@ extern "C" void quiet_logging()
 extern "C" int p2_create()
 {
 	Polygon_2 *p = new Polygon_2();
-	if (verbose) std::cout << "C++: New polygon at " << p << " with handle " << p2_counter << std::endl;
+	int fresh_handle = p2_fresh_handle();
+
+	if (verbose) std::cout << "C++: New polygon at " << p << " with handle " << fresh_handle << std::endl;
  
-	poly2s[p2_counter]=p;
-	return p2_counter++;
+	poly2s[fresh_handle]=p;
+	return fresh_handle;
 }
 
 extern "C" int p2_delete(int k)
@@ -46,7 +59,13 @@ extern "C" int p2_delete(int k)
 	if (poly2s.find(k)!=poly2s.end())
 	{
 		Polygon_2 *p = poly2s[k];
+		// Also erase points associated with the polygon
+		std::set<Point_2 *>::iterator it;
+		for (it=points[p].begin();it!=points[p].end();it++) delete (*it);
+		points.erase(p);
+		// Free the polygon
 		poly2s.erase(k);
+		p2_handles.push_back(k);
 		delete p;
 		return 0;
 	}
