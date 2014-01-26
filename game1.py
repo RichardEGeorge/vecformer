@@ -27,10 +27,10 @@ velocity_x = 0.0;
 velocity_y = 0.0;
 acceleration_x = 0.0;
 acceleration_y = 0.0;
-max_velocity = 16.0;
-drag = 0.85;
+max_velocity = 300.0;
+drag = 0.25; # Time for velocity to fall to 1/e
 tt = 0.0;
-active_acceleration = max_velocity * ( 1.0 - drag );
+active_acceleration = max_velocity/drag;
 
 # Why yes, I will hard code the window size
 
@@ -50,7 +50,7 @@ def parse_coords(pts):
 			
 # The windowing code starts here
 
-window = pyglet.window.Window(800,600);
+window = pyglet.window.Window(width,height);
 keyboard = pyglet.window.key.KeyStateHandler();
 window.push_handlers(keyboard);
 
@@ -132,40 +132,36 @@ def update(dt):
 	global world_x,world_y,velocity_x,velocity_y,acceleration_x,acceleration_y,active_acceleration,tt;
 
 	tt+= dt;
-	world_x += velocity_x;
-	world_y += velocity_y;
+	world_x += velocity_x * dt;
+	world_y += velocity_y * dt;
 
 	acceleration_x = 0.0;
 	acceleration_y = 0.0;
 	
-	if keyboard[pyglet.window.key.UP]: 
-		acceleration_y = active_acceleration;
-	if keyboard[pyglet.window.key.DOWN]: 
-		acceleration_y = -active_acceleration;
-	if keyboard[pyglet.window.key.RIGHT]: 
-		acceleration_x = active_acceleration;
-	if keyboard[pyglet.window.key.LEFT]: 
-		acceleration_x = -active_acceleration;
-
-	if keyboard[pyglet.window.key.SPACE]: 
-		if world_y<1:
-			velocity_y = 50.0;
-	
-	if world_y <0:
-		world_y = 0.0;
-		velocity_y = 0.0;
-		
 	if world_y > 0:
-		acceleration_y = -10.0;
+		acceleration_y = -600.0;
+		friction = 0.1;
 	else:
 		acceleration_y = 0.0;
+		world_y = 0.0;
+		velocity_y = 0.0;
+		friction = 1.0;
 		
-	velocity_x += acceleration_x;
-	velocity_y += acceleration_y;
+		if keyboard[pyglet.window.key.SPACE]: 
+			velocity_y = 400.0;
+			
+	if keyboard[pyglet.window.key.RIGHT]: 
+		acceleration_x = active_acceleration*friction;
+	if keyboard[pyglet.window.key.LEFT]: 
+		acceleration_x = -active_acceleration*friction;
+
+	velocity_x += acceleration_x * dt;
+	velocity_y += acceleration_y * dt;
 	
-	velocity_x *= drag;
-	velocity_y *= drag;
-		
+	if world_y <= 0:
+		velocity_x *= exp(-dt/drag);
+		velocity_y *= exp(-dt/drag);
+	
 pyglet.clock.schedule_interval(update,1.0/30.0);
 	
 # window.push_handlers(pyglet.window.event.WindowEventLogger())
