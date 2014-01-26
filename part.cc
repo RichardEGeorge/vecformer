@@ -1,15 +1,18 @@
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
-#include <CGAL/Partition_traits_2.h>
 #include <CGAL/partition_2.h>
 #include <CGAL/point_generators_2.h>
+#include <CGAL/Boolean_set_operations_2.h>
+#include <CGAL/Partition_traits_2.h>
+
 #include <cassert>
 #include <list>
 #include <fstream>
 
-typedef CGAL::Exact_predicates_exact_constructions_kernel K;
+typedef CGAL::Exact_predicates_exact_constructions_kernel   K;
 typedef CGAL::Partition_traits_2<K>                         Traits;
-typedef Traits::Point_2                                     Point_2;
-typedef Traits::Polygon_2                                   Polygon_2;
+typedef K::Point_2                                          Point_2;
+typedef CGAL::Polygon_2<K>                                  Polygon_2;
+typedef CGAL::Polygon_with_holes_2<K>                       Polygon_with_holes_2;
 typedef Polygon_2::Vertex_iterator                          Vertex_iterator;
 typedef std::list<Polygon_2>                                Polygon_list;
 typedef CGAL::Creator_uniform_2<int, Point_2>               Creator;
@@ -54,6 +57,59 @@ extern "C" int p2_create()
 	return fresh_handle;
 }
 
+extern "C" int p2_add_vertex(int k,double x,double y)
+{
+	if (verbose) std::cout << "C++: adding point (" << x << "," << y << ") to polygon " << k << std::endl;
+
+	if (poly2s.find(k)!=poly2s.end())
+	{
+		Polygon_2 *p = poly2s[k];
+		Point_2 *pt = new Point_2(x,y);
+		points[p].insert(pt);
+		p->push_back(*pt);
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}	
+}
+
+extern "C" int p2_create_union(int h1,int h2)
+{
+	if (poly2s.find(h1)==poly2s.end()) return -1;
+	if (poly2s.find(h2)==poly2s.end()) return -2;
+
+	Polygon_2 *p1 = poly2s[h1],*p2 = poly2s[h2];
+
+	int h3 = p2_create();
+
+	Polygon_with_holes_2 p3;
+
+	CGAL::join(*p1,*p2,p3);
+
+	Polygon_2 &boundary = p3.outer_boundary();
+	Polygon_2::Vertex_iterator vit;
+
+	for (vit=boundary.vertices_begin();vit!=boundary.vertices_end();vit++)
+	{
+		p2_add_vertex(h3,CGAL::to_double(vit->x()),CGAL::to_double(vit->y()));
+	}
+
+	return h3;	
+}
+
+extern "C" int p2_create_intersection(int h1,int h2)
+{
+	return -1;
+}
+
+extern "C" int p2_create_difference(int h1,int h2)
+{
+	return -1;
+}
+
+
 extern "C" int p2_delete(int k)
 {
 	if (poly2s.find(k)!=poly2s.end())
@@ -75,22 +131,37 @@ extern "C" int p2_delete(int k)
 	}
 }
 
-extern "C" int p2_add_vertex(int k,double x,double y)
+extern "C" int p2_get_vertices(int k,int n,void *d)
 {
-	if (verbose) std::cout << "C++: adding point (" << x << "," << y << ") to polygon " << k << std::endl;
+	if (n<0) return -3;
+
+	double *data = (double *)d;
 
 	if (poly2s.find(k)!=poly2s.end())
 	{
+		if (verbose) std::cout << "C++: getting " << n << " vertices from polygon " << k << std::endl;
+
 		Polygon_2 *p = poly2s[k];
-		Point_2 *pt = new Point_2(x,y);
-		points[p].insert(pt);
-		p->push_back(*pt);
+		
+		Polygon_2::Vertex_iterator vit;
+
+		int i=0;
+
+		for (vit=p->vertices_begin();vit!=p->vertices_end();vit++)
+		{
+			data[i++]=CGAL::to_double((*vit).x());
+			if (i==n) return 0;
+			data[i++]=CGAL::to_double((*vit).y());
+			if (i==n) return 0;
+		}		
+
 		return 0;
 	}
 	else
 	{
 		return -1;
 	}	
+
 }
 
 extern "C" int p2_is_simple(int k)
