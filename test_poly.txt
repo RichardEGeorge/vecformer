@@ -1,5 +1,18 @@
 Is polygon simple? yes
 Is polygon convex? yes
-Polygon A has signed area : -100
+Polygon A has signed area : 100
 Is the point (5,5) inside polygon A? 1
 Is the point (20,20) inside polygon A? 0
+[[  0.   0.]
+ [ 10.   0.]
+ [ 10.  10.]
+ [  0.  10.]]
+union of p1 and p2:
+[[  5.  15.]
+ [  5.  10.]
+ [  0.  10.]
+ [  0.   0.]
+ [ 10.   0.]
+ [ 10.   5.]
+ [ 15.   5.]
+ [ 15.  15.]]

@@ -19,7 +19,7 @@ import pyglet;
 # So ugly - this will go in the __init__ method of a class one day
 
 global world_x,world_y,velocity_x,velocity_y,acceleration_x,acceleration_y,active_acceleration;
-global ww,hh;
+global ww,hh,scale;
 
 world_x = 0.0;
 world_y = 0.0;
@@ -27,9 +27,10 @@ velocity_x = 0.0;
 velocity_y = 0.0;
 acceleration_x = 0.0;
 acceleration_y = 0.0;
-max_velocity = 300.0;
+max_velocity = 500.0;
 drag = 0.25; # Time for velocity to fall to 1/e
 tt = 0.0;
+scale = 0.25;
 active_acceleration = max_velocity/drag;
 
 # Why yes, I will hard code the window size
@@ -117,12 +118,12 @@ def on_draw():
 	pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION);
 	pyglet.gl.glLoadIdentity();
 	pyglet.gl.glOrtho(-ww/2.0, ww/2.0, -hh*.9, hh*.1, -1, 1);
-	pyglet.gl.glTranslatef(-world_x,-world_y,0,0);
 	pyglet.gl.glRotatef(3.0*sin(2.0*pi*tt/8.0),0.0,0.0,1.0);
-	pyglet.gl.glScalef(0.25,0.25,1.0);
 	
 	pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW);
 	pyglet.gl.glLoadIdentity();
+	pyglet.gl.glScalef(scale,scale,1.0);
+	pyglet.gl.glTranslatef(-world_x,-world_y,0,0);
 
 	batch.draw();
 	
@@ -130,7 +131,8 @@ def update(dt):
 	'''Add acceleration to velocity, add velocity to position, update acceleration according to keypressed, press space to jump and arrow keys to move'''
 
 	global world_x,world_y,velocity_x,velocity_y,acceleration_x,acceleration_y,active_acceleration,tt;
-
+	global scale;
+	
 	tt+= dt;
 	world_x += velocity_x * dt;
 	world_y += velocity_y * dt;
@@ -139,7 +141,7 @@ def update(dt):
 	acceleration_y = 0.0;
 	
 	if world_y > 0:
-		acceleration_y = -600.0;
+		acceleration_y = -1200.0;
 		friction = 0.1;
 	else:
 		acceleration_y = 0.0;
@@ -148,12 +150,21 @@ def update(dt):
 		friction = 1.0;
 		
 		if keyboard[pyglet.window.key.SPACE]: 
-			velocity_y = 400.0;
+			velocity_y = 800.0;
 			
 	if keyboard[pyglet.window.key.RIGHT]: 
 		acceleration_x = active_acceleration*friction;
 	if keyboard[pyglet.window.key.LEFT]: 
 		acceleration_x = -active_acceleration*friction;
+
+	if keyboard[pyglet.window.key.W]: 
+		if scale<10.0:
+			scale+=0.1;
+	
+	if keyboard[pyglet.window.key.Q]: 
+		if scale>0.2:
+			scale-=0.1;
+	
 
 	velocity_x += acceleration_x * dt;
 	velocity_y += acceleration_y * dt;
