@@ -19,7 +19,7 @@ import pyglet;
 # So ugly - this will go in the __init__ method of a class one day
 
 global world_x,world_y,velocity_x,velocity_y,acceleration_x,acceleration_y,active_acceleration;
-global width,height;
+global ww,hh;
 
 world_x = 0.0;
 world_y = 0.0;
@@ -34,8 +34,8 @@ active_acceleration = max_velocity/drag;
 
 # Why yes, I will hard code the window size
 
-width = 800.0;
-height = 600.0;
+ww = 800.0;
+hh = 600.0;
 
 circular_list = lambda m: [[n,(n+1) % m] for n in range(0,m)]; # Make a list of vertices running round the edge of a polygon
 noisy = lambda c: min(255,max(0,c+random.randrange(-32,32))); # Add a bit of noise to the colours of an object
@@ -50,7 +50,7 @@ def parse_coords(pts):
 			
 # The windowing code starts here
 
-window = pyglet.window.Window(width,height);
+window = pyglet.window.Window(int(ww),int(hh));
 keyboard = pyglet.window.key.KeyStateHandler();
 window.push_handlers(keyboard);
 
@@ -109,14 +109,14 @@ for group in root.findall('{http://www.w3.org/2000/svg}g'):
 
 @window.event
 def on_draw():
-	global width,height;
+	global ww,hh;
 	# Blank window
 	window.clear();
 
 	# Move the viewport
 	pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION);
 	pyglet.gl.glLoadIdentity();
-	pyglet.gl.glOrtho(-width/2.0, width/2.0, -height*.9, height*.1, -1, 1);
+	pyglet.gl.glOrtho(-ww/2.0, ww/2.0, -hh*.9, hh*.1, -1, 1);
 	pyglet.gl.glTranslatef(-world_x,-world_y,0,0);
 	pyglet.gl.glRotatef(3.0*sin(2.0*pi*tt/8.0),0.0,0.0,1.0);
 	pyglet.gl.glScalef(0.25,0.25,1.0);
