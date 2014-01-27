@@ -1,13 +1,28 @@
-Is polygon simple? yes
-Is polygon convex? yes
+Is polygon A simple? yes
+Is polygon A convex? yes
 Polygon A has signed area : 100
-Is the point (5,5) inside polygon A? 1
-Is the point (20,20) inside polygon A? 0
+Polygon A has vertices :
 [[  0.   0.]
  [ 10.   0.]
  [ 10.  10.]
  [  0.  10.]]
+Is the point (4,4) inside polygon A? : yes
+Is the point (12,12) inside polygon A? : no
+Is polygon B simple? yes
+Is polygon B convex? yes
+Polygon B has signed area : 100
+Polygon B has vertices :
+[[  5.   5.]
+ [ 15.   5.]
+ [ 15.  15.]
+ [  5.  15.]]
+Is the point (4,4) inside polygon B? : no
+Is the point (12,12) inside polygon B? : yes
 union of p1 and p2:
+Is polygon union of A and B simple? yes
+Is polygon union of A and B convex? no
+Polygon union of A and B has signed area : 175
+Polygon union of A and B has vertices :
 [[  5.  15.]
  [  5.  10.]
  [  0.  10.]
@@ -16,3 +31,5 @@ union of p1 and p2:
  [ 10.   5.]
  [ 15.   5.]
  [ 15.  15.]]
+Is the point (4,4) inside polygon union of A and B? : yes
+Is the point (12,12) inside polygon union of A and B? : yes
